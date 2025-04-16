@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج التشغيل G4S</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            direction: ltr; /* تغيير اتجاه الصفحة إلى LTR */
+        }
+        
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 50px; /* تغيير إلى الجانب الأيسر */
+            z-index: 100;
+        }
+        
+        .logo {
+            height: 80px;
+            width: auto;
+            max-width: 190px;
+        }
+        
+        .sheet-container {
+            width: fit-content;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            direction: rtl; /* المحتوى الداخلي يبقى RTL */
+        }
+        
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 10px;
+            position: relative;
+        }
+        
+        .header-col {
+            width: 30%;
+        }
+        
+        .header-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0078d7;
+            font-size: 14px;
+        }
+        
+        .header-content {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .date-selector {
+            margin-top: 5px;
+        }
+        
+        .date-selector select {
+            padding: 5px;
+            font-size: 12px;
+            width: 120px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* بقية الأنماط تبقى كما هي */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .data-table th, 
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12px;
+            height: 35px;
+            word-break: break-word;
+            white-space: normal;
+        }
+        
+        .data-table th {
+            background-color: #0078d7;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .name-col {
+            min-width: 150px;
+            max-width: 200px;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .day-col {
+            width: 25px;
+            min-width: 25px;
+            position: relative;
+        }
+        
+        .day-col select {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 11px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 0;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .data-table input.editable {
+            width: 100%;
+            border: none;
+            text-align: center;
+            background: transparent;
+            padding: 3px;
+            line-height: 1.5;
+        }
+        
+        .count-col {
+            width: 40px;
+            min-width: 40px;
+        }
+        
+        .id-card-col {
+            width: 150px;
+            min-width: 150px;
+        }
+        
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            border-top: 2px solid #0078d7;
+            padding-top: 15px;
+        }
+        
+        .comments-col {
+            width: 70%;
+        }
+        
+        .operation-col {
+            width: 25%;
+            text-align: center;
+        }
+        
+        .footer-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0078d7;
+        }
+        
+        .footer-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            height: 40px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .readonly-input {
+            background-color: #f5f5f5;
+            width: 100%;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .no-col {
+            width: 30px;
+            min-width: 30px;
+        }
+        
+        .delete-col {
+            width: 30px;
+            min-width: 30px;
+        }
+        
+        .id-col {
+            width: 80px;
+            min-width: 80px;
+        }
+        
+        .hidden-col {
+            display: none;
+        }
+        
+        .hidden-row {
+            display: none;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 10px 0;
+            gap: 15px;
+            direction: ltr; /* اتجاه أزرار التحكم LTR */
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        #save-image {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        #save-image:hover {
+            background-color: #218838;
+        }
+        
+        #save-data {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        #save-data:hover {
+            background-color: #0069d9;
+        }
+        
+        #clear-data {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        #clear-data:hover {
+            background-color: #c82333;
+        }
+        
+        #add-row {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        #add-row:hover {
+            background-color: #138496;
+        }
+        
+        .row-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .row-actions button {
+            padding: 3px 8px;
+            font-size: 12px;
+        }
+        
+        .actions-col {
+            width: 80px;
+            min-width: 80px;
+        }
+        
+        .hide-for-pdf {
+            display: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+        }
+        
+        .delete-row-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .delete-row-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 25px;
+            border: none;
+            width: 350px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        #modal-ok {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        #modal-ok:hover {
+            background-color: #0069d9;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        .merged-days {
+            text-align: center;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+        }
+        
+        .total-row {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        
+        .inactive-day {
+            background-color: #f8f9fa;
+            color: #adb5bd;
+        }
+        
+        .inactive-day select {
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+        
+        .operation-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        @media screen and (max-width: 1200px) {
+            body {
+                padding: 10px;
+                overflow-x: auto;
+            }
+            
+            .sheet-container {
+                padding: 15px;
+            }
+            
+            .logo-container {
+                left: 10px;
+                top: 10px;
+            }
+            
+            .logo {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- إضافة اللوجو في الجانب الأيسر العلوي -->
+    <div class="logo-container">
+        <img src="https://photos.app.goo.gl/zoHTmvWv2PwV6f7bA">
+    </div>
+
+    <div class="notification" id="notification"></div>
+    
+    <!-- نافذة التأكيد المنبثقة -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p style="font-size: 18px; margin-bottom: 10px;">تم حفظ البيانات بنجاح</p>
+            <i class="fas fa-check-circle" style="font-size: 50px; color: #28a745; margin: 15px 0;"></i>
+            <button id="modal-ok" class="secondary">موافق</button>
+        </div>
+    </div>
+
+    <div class="sheet-container" id="pdf-content">
+        <div class="header-row">
+            <div class="header-col">
+                <div class="header-title">BRANCH NAME :</div>
+                <div class="header-content">فرع دمياط- بنك الاهلي المتحد</div>
+            </div>
+            <div class="header-col">
+                <div class="header-title">From Date:</div>
+                <div class="header-content">من 
+                    <div class="date-selector">
+                        <select id="from-date"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="header-col">
+                <div class="header-title">To Date:</div>
+                <div class="header-content">الى 
+                    <div class="date-selector">
+                        <select id="to-date"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <div class="header-col">
+                <div class="header-title">CLINT NAME :</div>
+                <div class="header-content">فرع دمياط</div>
+            </div>
+            <div class="header-col">
+                <div class="header-title">MONTH :</div>
+                <div class="header-content" id="current-month">شهر أبريل 2025</div>
+            </div>
+            <div class="header-col">
+                <div class="header-title"></div>
+                <div class="header-content"></div>
+            </div>
+        </div>
+
+        <table class="data-table" id="main-table">
+            <thead>
+                <tr>
+                    <th class="delete-col">حذف</th>
+                    <th class="no-col">No</th>
+                    <th class="id-col">ID</th>
+                    <th class="name-col">Name</th>
+                    <!-- أعمدة الأيام الثابتة من 1 إلى 31 -->
+                    <th class="day-col day-header">1</th>
+                    <th class="day-col day-header">2</th>
+                    <th class="day-col day-header">3</th>
+                    <th class="day-col day-header">4</th>
+                    <th class="day-col day-header">5</th>
+                    <th class="day-col day-header">6</th>
+                    <th class="day-col day-header">7</th>
+                    <th class="day-col day-header">8</th>
+                    <th class="day-col day-header">9</th>
+                    <th class="day-col day-header">10</th>
+                    <th class="day-col day-header">11</th>
+                    <th class="day-col day-header">12</th>
+                    <th class="day-col day-header">13</th>
+                    <th class="day-col day-header">14</th>
+                    <th class="day-col day-header">15</th>
+                    <th class="day-col day-header">16</th>
+                    <th class="day-col day-header">17</th>
+                    <th class="day-col day-header">18</th>
+                    <th class="day-col day-header">19</th>
+                    <th class="day-col day-header">20</th>
+                    <th class="day-col day-header">21</th>
+                    <th class="day-col day-header">22</th>
+                    <th class="day-col day-header">23</th>
+                    <th class="day-col day-header">24</th>
+                    <th class="day-col day-header">25</th>
+                    <th class="day-col day-header">26</th>
+                    <th class="day-col day-header">27</th>
+                    <th class="day-col day-header">28</th>
+                    <th class="day-col day-header">29</th>
+                    <th class="day-col day-header">30</th>
+                    <th class="day-col day-header">31</th>
+                    <th class="count-col">T.W.S</th>
+                    <th class="count-col">T.Hrs</th>
+                    <th class="count-col">X</th>
+                    <th class="count-col">AL</th>
+                    <th class="id-card-col">ID CARD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="delete-col">
+                        <button class="delete-row-btn" title="حذف الصف"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                    <td class="no-col"><input type="text" class="editable" value="1"></td>
+                    <td class="id-col"><input type="text" class="editable" value="181419"></td>
+                    <td class="name-col"><input type="text" class="editable" value="احمد سامح زغلول"></td>
+                    <!-- خلايا الأيام من 1 إلى 31 -->
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td class="day-col day-cell">
+                        <select>
+                            <option value=""></option>
+                            <option value="D">D</option>
+                            <option value="N">N</option>
+                            <option value="X">X</option>
+                            <option value="AL">AL</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="editable" value="29911021100031"></td>
+                </tr>
+                
+                <!-- صف المجموع -->
+                <tr class="total-row">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="name-col">Total</td>
+                    <td class="merged-days" colspan="31"></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td><input type="text" class="readonly-input" value="0" readonly></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-row">
+            <div class="comments-col">
+                <div class="footer-title">Comments</div>
+                <input type="text" class="footer-input" id="comments" placeholder="أدخل تعليقاتك هنا...">
+            </div>
+            <div class="operation-col">
+                <div class="footer-title">Operation</div>
+                <div class="operation-name">علي زينهم علي</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-buttons">
+        <button id="save-image">
+            <i class="fas fa-camera"></i> حفظ كصورة
+        </button>
+        <button id="save-data">
+            <i class="fas fa-save"></i> حفظ البيانات
+        </button>
+        <button id="clear-data">
+            <i class="fas fa-trash"></i> مسح البيانات
+        </button>
+        <button id="add-row">
+            <i class="fas fa-plus"></i> إضافة صف
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // تعريف المتغيرات العامة
+            const monthNames = [
+                "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+                "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+            ];
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            const fromDateSelector = document.getElementById('from-date');
+            const toDateSelector = document.getElementById('to-date');
+            
+            // تهيئة الواجهة
+            initUI();
+            
+            // إعداد مستمعي الأحداث
+            setupEventListeners();
+            
+            // تحميل البيانات المحفوظة
+            loadSavedData();
+            
+            // دالة تهيئة الواجهة
+            function initUI() {
+                document.getElementById('current-month').textContent = 
+                    `شهر ${monthNames[currentMonth]} ${currentYear}`;
+                populateDateSelectors();
+                updateDayVisibility();
+                
+                // إضافة مستمع حدث لحذف الصف الأول
+                document.querySelector('.delete-row-btn').addEventListener('click', function() {
+                    if (confirm('هل أنت متأكد من حذف هذا الصف؟')) {
+                        const row = this.closest('tr');
+                        row.remove();
+                        updateTotals();
+                        updateRowNumbers();
+                        saveData();
+                    }
+                });
+            }
+            
+            // دالة ملء خيارات التاريخ
+            function populateDateSelectors() {
+                const selectedMonth = currentMonth;
+                const selectedYear = currentYear;
+                const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+                
+                fromDateSelector.innerHTML = '';
+                toDateSelector.innerHTML = '';
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    // تنسيق التاريخ بالشكل 1-04-2025 (يوم-شهر-سنة)
+                    const monthFormatted = String(selectedMonth + 1).padStart(2, '0');
+                    const dayFormatted = String(day).padStart(2, '0');
+                    const dateStr = `${dayFormatted}-${monthFormatted}-${selectedYear}`;
+                    const displayStr = `${day}-${monthFormatted}-${selectedYear}`;
+                    
+                    const option1 = document.createElement('option');
+                    option1.value = dateStr;
+                    option1.textContent = displayStr;
+                    fromDateSelector.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = dateStr;
+                    option2.textContent = displayStr;
+                    toDateSelector.appendChild(option2);
+                }
+                
+                // تعيين التاريخ الأول والأخير كقيم افتراضية
+                const firstDay = `01-${String(selectedMonth + 1).padStart(2, '0')}-${selectedYear}`;
+                const lastDay = `${String(daysInMonth).padStart(2, '0')}-${String(selectedMonth + 1).padStart(2, '0')}-${selectedYear}`;
+                
+                fromDateSelector.value = firstDay;
+                toDateSelector.value = lastDay;
+                
+                document.getElementById('current-month').textContent = 
+                    `شهر ${monthNames[selectedMonth]} ${selectedYear}`;
+            }
+
+            // دالة تحديث ظهور الأيام حسب الفترة المحددة
+            function updateDayVisibility() {
+                const fromDate = fromDateSelector.value;
+                const toDate = toDateSelector.value;
+                
+                if (!fromDate || !toDate) return;
+                
+                const fromDay = parseInt(fromDate.split('-')[0]);
+                const toDay = parseInt(toDate.split('-')[0]);
+                
+                // إخفاء الأيام خارج النطاق المحدد
+                const dayCells = document.querySelectorAll('.day-cell');
+                dayCells.forEach((cell, index) => {
+                    const dayNumber = index + 1;
+                    if (dayNumber < fromDay || dayNumber > toDay) {
+                        cell.classList.add('inactive-day');
+                        cell.querySelector('select').disabled = true;
+                    } else {
+                        cell.classList.remove('inactive-day');
+                        cell.querySelector('select').disabled = false;
+                    }
+                });
+                
+                // تحديث الحسابات لكل صف
+                document.querySelectorAll('#main-table tbody tr:not(.total-row)').forEach(row => {
+                    updateRowCalculations(row);
+                });
+            }
+            
+            // دالة إعداد مستمعي الأحداث
+            function setupEventListeners() {
+                fromDateSelector.addEventListener('change', function() {
+                    handleFromDateChange();
+                    saveData();
+                });
+                
+                toDateSelector.addEventListener('change', function() {
+                    handleToDateChange();
+                    saveData();
+                });
+                
+                document.getElementById('main-table').addEventListener('change', function(e) {
+                    if (e.target.tagName === 'SELECT') {
+                        const row = e.target.closest('tr');
+                        if (row) {
+                            updateRowCalculations(row);
+                            saveData();
+                        }
+                    }
+                });
+                
+                document.getElementById('add-row').addEventListener('click', addNewRow);
+                document.getElementById('save-image').addEventListener('click', saveAsImage);
+                document.getElementById('save-data').addEventListener('click', saveData);
+                document.getElementById('clear-data').addEventListener('click', clearData);
+                document.getElementById('comments').addEventListener('change', saveData);
+                
+                // أحداث النافذة المنبثقة
+                document.querySelector(".close").addEventListener("click", closeModal);
+                document.getElementById("modal-ok").addEventListener("click", closeModal);
+                window.addEventListener("click", handleOutsideClick);
+            }
+            
+            // معالجة تغيير تاريخ البداية
+            function handleFromDateChange() {
+                const [day, month, year] = fromDateSelector.value.split('-').map(Number);
+                const selectedMonth = month - 1;
+                const selectedYear = year;
+                const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+                
+                document.getElementById('current-month').textContent = 
+                    `شهر ${monthNames[selectedMonth]} ${selectedYear}`;
+                
+                toDateSelector.innerHTML = '';
+                
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dayFormatted = String(d).padStart(2, '0');
+                    const monthFormatted = String(month).padStart(2, '0');
+                    const dateStr = `${dayFormatted}-${monthFormatted}-${year}`;
+                    const displayStr = `${d}-${monthFormatted}-${year}`;
+                    
+                    const option = document.createElement('option');
+                    option.value = dateStr;
+                    option.textContent = displayStr;
+                    toDateSelector.appendChild(option);
+                }
+                
+                const currentToDay = parseInt(toDateSelector.value?.split('-')[0]) || daysInMonth;
+                const lastDay = `${String(daysInMonth).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
+                
+                if (currentToDay > daysInMonth) {
+                    toDateSelector.value = lastDay;
+                } else {
+                    const currentToDayFormatted = String(currentToDay).padStart(2, '0');
+                    toDateSelector.value = `${currentToDayFormatted}-${String(month).padStart(2, '0')}-${year}`;
+                }
+                
+                updateDayVisibility();
+            }
+            
+            // معالجة تغيير تاريخ النهاية
+            function handleToDateChange() {
+                updateDayVisibility();
+            }
+            
+            // تحديث حسابات الصف
+            function updateRowCalculations(row) {
+                let twsCount = 0;
+                let xCount = 0;
+                let alCount = 0;
+                const daySelects = row.querySelectorAll('.day-col select:not(:disabled)');
+                
+                daySelects.forEach(select => {
+                    if (select.value === 'D' || select.value === 'N') {
+                        twsCount++;
+                    } else if (select.value === 'X') {
+                        xCount++;
+                    } else if (select.value === 'AL') {
+                        alCount++;
+                    }
+                });
+                
+                const twsInput = row.querySelector('td:nth-last-child(5) input');
+                const thrsInput = row.querySelector('td:nth-last-child(4) input');
+                const xInput = row.querySelector('td:nth-last-child(3) input');
+                const alInput = row.querySelector('td:nth-last-child(2) input');
+                
+                if (twsInput) twsInput.value = twsCount;
+                if (thrsInput) thrsInput.value = twsCount * 12;
+                if (xInput) xInput.value = xCount;
+                if (alInput) alInput.value = alCount;
+                
+                updateTotals();
+            }
+            
+            // تحديث المجاميع
+            function updateTotals() {
+                const rows = document.querySelectorAll('#main-table tbody tr:not(.total-row):not(.hidden-row)');
+                let totalTWS = 0;
+                let totalTHrs = 0;
+                let totalX = 0;
+                let totalAL = 0;
+                
+                rows.forEach(row => {
+                    const twsInput = row.querySelector('td:nth-last-child(5) input');
+                    const thrsInput = row.querySelector('td:nth-last-child(4) input');
+                    const xInput = row.querySelector('td:nth-last-child(3) input');
+                    const alInput = row.querySelector('td:nth-last-child(2) input');
+                    
+                    if (twsInput && twsInput.value) totalTWS += parseInt(twsInput.value) || 0;
+                    if (thrsInput && thrsInput.value) totalTHrs += parseInt(thrsInput.value) || 0;
+                    if (xInput && xInput.value) totalX += parseInt(xInput.value) || 0;
+                    if (alInput && alInput.value) totalAL += parseInt(alInput.value) || 0;
+                });
+                
+                const totalRow = document.querySelector('.data-table tbody tr.total-row');
+                if (totalRow) {
+                    const totalTWSInput = totalRow.querySelector('td:nth-last-child(5) input');
+                    const totalTHrsInput = totalRow.querySelector('td:nth-last-child(4) input');
+                    const totalXInput = totalRow.querySelector('td:nth-last-child(3) input');
+                    const totalALInput = totalRow.querySelector('td:nth-last-child(2) input');
+                    
+                    if (totalTWSInput) totalTWSInput.value = totalTWS;
+                    if (totalTHrsInput) totalTHrsInput.value = totalTHrs;
+                    if (totalXInput) totalXInput.value = totalX;
+                    if (totalALInput) totalALInput.value = totalAL;
+                }
+            }
+            
+            // إضافة صف جديد
+            function addNewRow() {
+                const tbody = document.querySelector('#main-table tbody');
+                const rows = tbody.querySelectorAll('tr:not(.total-row)');
+                const lastRow = rows[rows.length - 1];
+                const newRow = lastRow.cloneNode(true);
+                
+                newRow.querySelectorAll('input.editable').forEach(input => {
+                    if (!input.classList.contains('readonly-input')) {
+                        input.value = '';
+                    } else {
+                        input.value = '0';
+                    }
+                });
+                
+                newRow.querySelectorAll('select').forEach(select => {
+                    select.value = '';
+                });
+                
+                const rowNumber = rows.length;
+                newRow.querySelector('.no-col input').value = rowNumber;
+                
+                tbody.insertBefore(newRow, tbody.querySelector('tr.total-row'));
+                
+                newRow.querySelector('.delete-row-btn').addEventListener('click', function() {
+                    if (confirm('هل أنت متأكد من حذف هذا الصف؟')) {
+                        newRow.remove();
+                        updateTotals();
+                        updateRowNumbers();
+                        saveData();
+                    }
+                });
+                
+                // إضافة مستمعي أحداث للخلايا الجديدة
+                newRow.querySelectorAll('select').forEach(select => {
+                    select.addEventListener('change', function() {
+                        updateRowCalculations(newRow);
+                        saveData();
+                    });
+                });
+                
+                saveData();
+            }
+            
+            // تحديث أرقام الصفوف
+            function updateRowNumbers() {
+                const rows = document.querySelectorAll('#main-table tbody tr:not(.total-row):not(.hidden-row)');
+                rows.forEach((row, index) => {
+                    row.querySelector('.no-col input').value = index + 1;
+                });
+            }
+            
+            // حفظ كصورة
+            function saveAsImage() {
+                html2canvas(document.querySelector("#pdf-content"), {
+                    scale: 4,
+                    logging: true,
+                    useCORS: true,
+                    allowTaint: true,
+                    windowHeight: document.querySelector("#pdf-content").scrollHeight,
+                    windowWidth: document.querySelector("#pdf-content").scrollWidth,
+                    letterRendering: true,
+                    quality: 1
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'نموذج_التشغيل.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                });
+            }
+            
+            // الحصول على البيانات الحالية
+            function getCurrentData() {
+                const data = {
+                    fromDate: fromDateSelector.value,
+                    toDate: toDateSelector.value,
+                    comments: document.getElementById('comments').value,
+                    rows: []
+                };
+                
+                const rows = document.querySelectorAll('#main-table tbody tr:not(.total-row):not(.hidden-row)');
+                rows.forEach(row => {
+                    const rowData = {
+                        id: row.querySelector('.id-col input').value,
+                        name: row.querySelector('.name-col input').value,
+                        idCard: row.querySelector('.id-card-col input').value,
+                        days: []
+                    };
+                    
+                    const daySelects = row.querySelectorAll('.day-col select');
+                    daySelects.forEach(select => {
+                        rowData.days.push(select.value);
+                    });
+                    
+                    data.rows.push(rowData);
+                });
+                
+                return data;
+            }
+            
+            // حفظ البيانات
+            function saveData() {
+                const data = getCurrentData();
+                try {
+                    localStorage.setItem('g4s_form_data', JSON.stringify(data));
+                    showNotification('تم حفظ البيانات بنجاح', 'success');
+                    showSaveModal();
+                } catch (error) {
+                    console.error('حدث خطأ أثناء الحفظ:', error);
+                    showNotification('حدث خطأ أثناء حفظ البيانات!', 'error');
+                }
+            }
+            
+            // عرض الإشعار
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.style.display = 'block';
+                
+                if (type === 'success') {
+                    notification.style.backgroundColor = '#28a745';
+                } else {
+                    notification.style.backgroundColor = '#dc3545';
+                }
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+            
+            // عرض نافذة الحفظ
+            function showSaveModal() {
+                const modal = document.getElementById("saveModal");
+                modal.style.display = "block";
+                
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 3000);
+            }
+            
+            // إغلاق النافذة
+            function closeModal() {
+                document.getElementById("saveModal").style.display = "none";
+            }
+            
+            // النقر خارج النافذة
+            function handleOutsideClick(event) {
+                const modal = document.getElementById("saveModal");
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            
+            // مسح البيانات
+            function clearData() {
+                if (confirm('هل أنت متأكد من مسح جميع البيانات المحفوظة؟')) {
+                    localStorage.removeItem('g4s_form_data');
+                    location.reload();
+                }
+            }
+            
+            // تحميل البيانات المحفوظة
+            function loadSavedData() {
+                const savedData = localStorage.getItem('g4s_form_data');
+                if (savedData) {
+                    try {
+                        const data = JSON.parse(savedData);
+                        
+                        // تحديث تواريخ البداية والنهاية أولاً
+                        if (data.fromDate) fromDateSelector.value = data.fromDate;
+                        if (data.toDate) toDateSelector.value = data.toDate;
+                        
+                        // تحديث واجهة المستخدم بناءً على التواريخ الجديدة
+                        updateDayVisibility();
+                        
+                        // مسح جميع الصفوف ما عدا الصف الأول وصف المجموع
+                        const tbody = document.querySelector('#main-table tbody');
+                        const rows = tbody.querySelectorAll('tr');
+                        for (let i = rows.length - 2; i > 0; i--) {
+                            rows[i].remove();
+                        }
+                        
+                        // تحميل البيانات في الصفوف
+                        if (data.rows && data.rows.length > 0) {
+                            const firstRow = tbody.querySelector('tr:first-child');
+                            updateRowData(firstRow, data.rows[0]);
+                            
+                            for (let i = 1; i < data.rows.length; i++) {
+                                addNewRowWithData(data.rows[i]);
+                            }
+                        }
+                        
+                        // تحميل التعليقات
+                        if (data.comments) document.getElementById('comments').value = data.comments;
+                        
+                        updateTotals();
+                    } catch (error) {
+                        console.error('خطأ في تحميل البيانات:', error);
+                    }
+                }
+            }
+            
+            // تحديث بيانات الصف
+            function updateRowData(row, rowData) {
+                if (rowData.id) row.querySelector('.id-col input').value = rowData.id;
+                if (rowData.name) row.querySelector('.name-col input').value = rowData.name;
+                if (rowData.idCard) row.querySelector('.id-card-col input').value = rowData.idCard;
+                
+                if (rowData.days) {
+                    const daySelects = row.querySelectorAll('.day-col select');
+                    daySelects.forEach((select, i) => {
+                        if (rowData.days[i]) select.value = rowData.days[i];
+                    });
+                }
+                
+                updateRowCalculations(row);
+            }
+            
+            // إضافة صف جديد ببيانات
+            function addNewRowWithData(rowData) {
+                const tbody = document.querySelector('#main-table tbody');
+                const firstRow = tbody.querySelector('tr:first-child');
+                const newRow = firstRow.cloneNode(true);
+                
+                updateRowData(newRow, rowData);
+                
+                const rowNumber = tbody.querySelectorAll('tr:not(.total-row)').length;
+                newRow.querySelector('.no-col input').value = rowNumber;
+                
+                tbody.insertBefore(newRow, tbody.querySelector('tr.total-row'));
+                
+                newRow.querySelector('.delete-row-btn').addEventListener('click', function() {
+                    if (confirm('هل أنت متأكد من حذف هذا الصف؟')) {
+                        newRow.remove();
+                        updateTotals();
+                        updateRowNumbers();
+                        saveData();
+                    }
+                });
+                
+                // إضافة مستمعي أحداث للخلايا الجديدة
+                newRow.querySelectorAll('select').forEach(select => {
+                    select.addEventListener('change', function() {
+                        updateRowCalculations(newRow);
+                        saveData();
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
